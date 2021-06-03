@@ -28,7 +28,6 @@ module SqlTracker
   def self.output_csv(csv_delimiter: '|', sql_value: '?')
     config = SqlTracker::Config.apply_defaults.new
     config.enabled = true
-    config.print_csv = true
     config.sql_value = sql_value
     handler = SqlTracker::Handler.new(config)
     handler.subscribe
