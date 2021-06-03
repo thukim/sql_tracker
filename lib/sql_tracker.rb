@@ -33,7 +33,7 @@ module SqlTracker
     handler.subscribe
     yield
     handler.unsubscribe
-    handler.print_csv(csv_delimiter)
+    handler.print_csv(csv_delimiter: csv_delimiter)
   end
 end
 
