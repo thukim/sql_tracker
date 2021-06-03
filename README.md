@@ -48,6 +48,21 @@ query_data.values
 # }]
 ```
 
+### Tracking and Printing with CSV format Using a Block
+
+It is also possible to track queries executed within a block. This method uses a new subscriber to `sql.active_record` event notifications for each invocation. Results using this method will be printed out in the csv format with the customizable csv delimiter
+
+```ruby
+SqlTracker.output_csv do
+  # Run some active record queries
+end
+
+# =>
+# ..."==================PRINTING CSV...=================="
+# "SELECT * FROM users|1|0.0011920928955078125|/Users/thukim/projects/sql_tracker/test/handler_test.rb:35:in `block in test_should_print_csv_sql_command_in_the_list'"
+# "select name from products where id IN (xxx)|1|0.00095367431640625|/Users/thukim/projects/sql_tracker/test/handler_test.rb:35:in `block in test_should_print_csv_sql_command_in_the_list'"
+# "==================FINISH PRINTING CSV=================="```
+
 ## Reporting
 
 To generate report, run
@@ -82,6 +97,7 @@ sql_tracker tmp/sql_tracker-*.json --sort-by=duration
 All the configurable variables and their defaults are list below:
 ```ruby
 SqlTracker::Config.enabled = true
+SqlTracker::Config.sql_value = 'xxx'
 SqlTracker::Config.tracked_paths = %w(app lib)
 SqlTracker::Config.tracked_sql_command = %w(SELECT INSERT UPDATE DELETE)
 SqlTracker::Config.output_path = File.join(Rails.root.to_s, 'tmp')

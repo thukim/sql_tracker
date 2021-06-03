@@ -24,6 +24,20 @@ module SqlTracker
       end
     end
 
+    def test_should_print_csv_sql_command_in_the_list
+      config = sample_config
+      handler = SqlTracker::Handler.new(config)
+      queries = [
+        'SELECT * FROM users',
+        'select name from products where id IN (1,2)'
+      ]
+      queries.each do |query|
+        handler.call('xxx', Time.now.to_f, Time.now.to_f, 1, { sql: query })
+      end
+      assert_equal('==================FINISH PRINTING CSV==================',
+        handler.print_csv)
+    end
+
     def test_should_not_track_sql_command_not_in_the_list
       config = sample_config
       config.tracked_sql_command = %w(INSERT)

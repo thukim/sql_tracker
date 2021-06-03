@@ -27,6 +27,15 @@ module SqlTracker
       @subscription = nil
     end
 
+    def print_csv(csv_delimiter: '|')
+      p "==================PRINTING CSV...=================="
+      data.values.each do |row|
+        p [row[:sql], row[:count], row[:duration],
+           row[:source].uniq.join(',')].join(csv_delimiter)
+      end;
+      p '==================FINISH PRINTING CSV=================='
+    end
+
     def call(_name, started, finished, _id, payload)
       return unless @config.enabled
 
@@ -61,13 +70,14 @@ module SqlTracker
     end
 
     def clean_sql_query(query)
+      sql_value = @config.try(:sql_value) || 'xxx'
       query.squish!
-      query.gsub!(/(\s(=|>|<|>=|<=|<>|!=)\s)('[^']+'|[\$\+\-\w\.]+)/, '\1xxx')
-      query.gsub!(/(\sIN\s)\([^\(\)]+\)/i, '\1(xxx)')
-      query.gsub!(/(\sBETWEEN\s)('[^']+'|[\+\-\w\.]+)(\sAND\s)('[^']+'|[\+\-\w\.]+)/i, '\1xxx\3xxx')
-      query.gsub!(/(\sVALUES\s)\(.+\)/i, '\1(xxx)')
-      query.gsub!(/(\s(LIKE|ILIKE|SIMILAR TO|NOT SIMILAR TO)\s)('[^']+')/i, '\1xxx')
-      query.gsub!(/(\s(LIMIT|OFFSET)\s)(\d+)/i, '\1xxx')
+      query.gsub!(/(\s(=|>|<|>=|<=|<>|!=)\s)('[^']+'|[\$\+\-\w\.]+)/, '\1'.concat(sql_value))
+      query.gsub!(/(\sIN\s)\([^\(\)]+\)/i, '\1('.concat(sql_value).concat(')'))
+      query.gsub!(/(\sBETWEEN\s)('[^']+'|[\+\-\w\.]+)(\sAND\s)('[^']+'|[\+\-\w\.]+)/i, '\1'.concat(sql_value).concat('\3').concat(sql_value))
+      query.gsub!(/(\sVALUES\s)\(.+\)/i, '\1('.concat(sql_value).concat(')'))
+      query.gsub!(/(\s(LIKE|ILIKE|SIMILAR TO|NOT SIMILAR TO)\s)('[^']+')/i, '\1'.concat(sql_value))
+      query.gsub!(/(\s(LIMIT|OFFSET)\s)(\d+)/i, '\1'.concat(sql_value))
       query
     end
 
