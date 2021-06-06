@@ -4,12 +4,13 @@ module SqlTracker
   class Config
     include ActiveSupport::Configurable
     config_accessor :tracked_paths, :tracked_sql_command, :output_path, :enabled,
-                    :sql_value
+                    :sql_value, :trace_level
 
     class << self
       def apply_defaults
         self.enabled = enabled.nil? ? true : enabled
         self.sql_value = 'xxx'.freeze
+        self.trace_level = 1
         self.tracked_paths ||= %w(app lib).freeze
         self.tracked_sql_command ||= %w(SELECT INSERT UPDATE DELETE).freeze
         self.output_path ||= begin

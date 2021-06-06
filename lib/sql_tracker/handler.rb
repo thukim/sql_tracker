@@ -104,14 +104,14 @@ module SqlTracker
       @data[key][:sql] = sql
       @data[key][:count] = 1
       @data[key][:duration] = duration
-      @data[key][:source] = [trace.first]
+      @data[key][:source] = [trace[0...@config.trace_level]]
       @data
     end
 
     def update_data(key, trace, duration)
       @data[key][:count] += 1
       @data[key][:duration] += duration
-      @data[key][:source] << trace.first
+      @data[key][:source] += trace[0...@config.trace_level]
       @data
     end
 

@@ -25,10 +25,11 @@ module SqlTracker
     handler.data
   end
 
-  def self.output_csv(csv_delimiter: '|', sql_value: '?')
+  def self.output_csv(csv_delimiter: '|', sql_value: '?', trace_level: 1)
     config = SqlTracker::Config.apply_defaults.new
     config.enabled = true
     config.sql_value = sql_value
+    config.trace_level = trace_level
     handler = SqlTracker::Handler.new(config)
     handler.subscribe
     yield

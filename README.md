@@ -53,7 +53,7 @@ query_data.values
 It is also possible to track queries executed within a block. This method uses a new subscriber to `sql.active_record` event notifications for each invocation. Results using this method will be printed out in the csv format with the customizable csv delimiter
 
 ```ruby
-SqlTracker.output_csv do
+SqlTracker.output_csv(csv_delimiter: '|', sql_value: '?', trace_level: 5) do
   # Run some active record queries
 end
 
@@ -98,6 +98,7 @@ All the configurable variables and their defaults are list below:
 ```ruby
 SqlTracker::Config.enabled = true
 SqlTracker::Config.sql_value = 'xxx'
+SqlTracker::Config.trace_level = 1
 SqlTracker::Config.tracked_paths = %w(app lib)
 SqlTracker::Config.tracked_sql_command = %w(SELECT INSERT UPDATE DELETE)
 SqlTracker::Config.output_path = File.join(Rails.root.to_s, 'tmp')
